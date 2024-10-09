@@ -1,7 +1,8 @@
 <?php
 require 'config.php';
 session_start();
-ini_set('display_errors', 0); // Turn off error reporting in production
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
@@ -18,15 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$username]);
     if ($stmt->fetch()) {
         echo 'Username already taken!';
-        exit; // Stop further execution
+        exit;
     }
 
-    // Insert new user with plain text password
+    // Insert new user
     $stmt = $pdo->prepare('INSERT INTO users (username, password) VALUES (?, ?)');
     if ($stmt->execute([$username, $password])) {
-        echo 'User registered!';
+        echo 'User registered successfully!';
     } else {
-        echo 'Registration failed!';
+        $errorInfo = $stmt->errorInfo();
+        echo 'Registration failed: ' . $errorInfo[2];
     }
 }
-?>

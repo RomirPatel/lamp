@@ -3,26 +3,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginToggle = document.getElementById('login-toggle');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
-    const messageDiv = document.getElementById('message'); // Reference to message area
+    const messageDiv = document.getElementById('message');
 
-    // Toggle to registration form
     registerToggle.addEventListener('click', function() {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('register-section').style.display = 'block';
-        messageDiv.style.display = 'none'; // Hide message area when toggling
+        messageDiv.style.display = 'none';
     });
 
     // Toggle back to login form
     loginToggle.addEventListener('click', function() {
         document.getElementById('register-section').style.display = 'none';
         document.getElementById('login-section').style.display = 'block';
-        messageDiv.style.display = 'none'; // Hide message area when toggling
+        messageDiv.style.display = 'none';
     });
 
     // Handle registration
     registerForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-
+        e.preventDefault();
         const regUsername = document.getElementById('reg-username').value;
         const regPassword = document.getElementById('reg-password').value;
 
@@ -35,22 +33,21 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.text())
         .then(data => {
-            showMessage(data); // Show registration feedback
-            if (data.includes('User registered!')) {
-                // Automatically switch to the login form upon successful registration
+            showMessage(data);
+            if (data.includes('User registered successfully!')) { // Update the condition here
                 document.getElementById('register-section').style.display = 'none';
                 document.getElementById('login-section').style.display = 'block';
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showMessage('An error occurred during registration.'); // Show a generic error message
+            showMessage('An error occurred during registration.');
         });
     });
 
     // Handle login
     loginForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
@@ -64,30 +61,32 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.text())
         .then(data => {
             if (data.trim() === 'Login successful!') {
-                // Hide messageDiv on successful login
                 messageDiv.style.display = 'none';
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('todo-app').style.display = 'block';
                 document.getElementById('user-info').innerText = `Logged in as: ${username}`;
             } else {
-                showMessage(data); // Show the server response
+                showMessage(data);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showMessage('An error occurred during login.'); // Show a generic error message
+            showMessage('An error occurred during login.');
         });
     });
 
     // Function to display messages
     function showMessage(message) {
         messageDiv.innerText = message;
-        messageDiv.classList.remove('alert-success', 'alert-danger'); // Clear previous classes
-        if (message.includes('successfully')) {
+        messageDiv.classList.remove('alert-success', 'alert-danger');
+
+        // Change condition to check the success message
+        if (message.includes('User registered successfully!')) {
             messageDiv.classList.add('alert-success');
         } else {
             messageDiv.classList.add('alert-danger');
         }
-        messageDiv.style.display = 'block'; // Show message area
+
+        messageDiv.style.display = 'block';
     }
 });
